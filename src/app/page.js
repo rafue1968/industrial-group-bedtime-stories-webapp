@@ -1,95 +1,115 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useState } from "react";
+
+// ===== Developer Notes (Daniel) =====
+// Role: React + AI Integration
+// Changes:
+// - Replaced boilerplate content with Topic Picker + Custom Input + Generate Button
+// - Added dummy summaries display (to simulate AI response)
+// - Used useState() to handle selected topic, input, and summaries
+// - Placeholder logic to be replaced with real AI API (e.g. OpenAI) in next phase
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const predefinedTopics = ["Science", "Time Travel", "Dreams"];
+  const [customTopic, setCustomTopic] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [summaries, setSummaries] = useState([]);
 
-        <div className={styles.ctas}>
+  const handleGenerate = () => {
+    const topicToUse = customTopic || selectedTopic;
+    if (!topicToUse) {
+      alert("Please choose or enter a topic.");
+      return;
+    }
+
+    // Placeholder for AI API call – replace with actual backend logic later
+    const dummyResponse = [
+      `Once upon a time in the world of ${topicToUse}, something magical happened...`,
+      `In the heart of ${topicToUse}, a young explorer discovered a secret that changed everything.`,
+    ];
+    setSummaries(dummyResponse);
+  };
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.description}>
+        <p>
+          Get started by selecting a topic&nbsp;
+          <code className={styles.code}>or create your own</code>
+        </p>
+        <div>
           <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
           >
             <Image
-              className={styles.logo}
               src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              alt="Vercel Logo"
+              className={styles.vercelLogo}
+              width={100}
+              height={24}
+              priority
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
           </a>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      <div className={styles.center}>
+        <Image
+          className={styles.logo}
+          src="/next.svg"
+          alt="Next.js Logo"
+          width={180}
+          height={37}
+          priority
+        />
+      </div>
+
+      {/* ===== Topic Picker + Input UI ===== */}
+      <div className={styles.topicSection}>
+        <h2>Select a Topic</h2>
+        <div className={styles.topicButtons}>
+          {predefinedTopics.map((topic) => (
+            <button
+              key={topic}
+              className={selectedTopic === topic ? styles.selected : ""}
+              onClick={() => {
+                setSelectedTopic(topic);
+                setCustomTopic("");
+              }}
+            >
+              {topic}
+            </button>
+          ))}
+        </div>
+        <input
+          type="text"
+          placeholder="Or write your own topic..."
+          value={customTopic}
+          onChange={(e) => {
+            setCustomTopic(e.target.value);
+            setSelectedTopic("");
+          }}
+          className={styles.inputBox}
+        />
+        <button className={styles.generateBtn} onClick={handleGenerate}>
+          Generate Summary
+        </button>
+      </div>
+
+      {/* ===== Summaries Output Section ===== */}
+      <div className={styles.summarySection}>
+        <h2>Story Summaries</h2>
+        {summaries.map((summary, index) => (
+          <p key={index} className={styles.summaryCard}>
+            {summary}
+          </p>
+        ))}
+      </div>
+    </main>
   );
 }
