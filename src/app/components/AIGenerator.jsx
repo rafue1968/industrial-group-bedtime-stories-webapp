@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import db from "../../../firebase"; 
 import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../../firebase"; 
 
 export default function AIGenerator() {
   const [topic, setTopic] = useState("");
@@ -11,14 +11,16 @@ export default function AIGenerator() {
   const generateSummary = async () => {
     if (!topic.trim()) return;
 
-    const newSummary = `This is a bedtime story summary about "${topic}".`; 
+    // Placeholder AI-generated summary
+    const newSummary = `This is a bedtime story summary about "${topic}".`;
     setSummary(newSummary);
 
+    // Save to Firebase Firestore
     try {
       await addDoc(collection(db, "summaries"), {
         topic,
         summary: newSummary,
-        createdAt: new Date()
+        createdAt: new Date(),
       });
       console.log("✅ Summary saved to Firestore");
     } catch (error) {
@@ -29,6 +31,7 @@ export default function AIGenerator() {
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
       <h2>Select a Topic</h2>
+
       <div>
         {["Science", "Time Travel", "Dreams"].map((preset) => (
           <button
@@ -51,7 +54,14 @@ export default function AIGenerator() {
         />
         <button
           onClick={generateSummary}
-          style={{ marginLeft: "0.5rem", padding: "0.5rem 1rem", background: "#0070f3", color: "#fff" }}
+          style={{
+            marginLeft: "0.5rem",
+            padding: "0.5rem 1rem",
+            background: "#0070f3",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
         >
           Generate Summary
         </button>
