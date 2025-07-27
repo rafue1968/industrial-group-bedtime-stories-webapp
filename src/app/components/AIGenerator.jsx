@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import db from "../../../firebase"; // ✅ Corrected path
+import db from "../../../firebase"; 
 import { collection, addDoc } from "firebase/firestore";
 
 export default function AIGenerator() {
@@ -11,7 +11,7 @@ export default function AIGenerator() {
   const generateSummary = async () => {
     if (!topic.trim()) return;
 
-    const newSummary = `This is a bedtime story summary about "${topic}".`; // Replace with real logic or API call
+    const newSummary = `This is a bedtime story summary about "${topic}".`; 
     setSummary(newSummary);
 
     try {
