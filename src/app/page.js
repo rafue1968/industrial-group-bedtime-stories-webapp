@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./page.module.css";
-import AIGenerator from "./components/AIGenerator";
+import AIGenerator from "../components/AIGenerator";
 import ShowLogIn from "@/components/ShowLogIn";
 import SignInForm from "@/components/SignInForm";
 import Link from "next/link";

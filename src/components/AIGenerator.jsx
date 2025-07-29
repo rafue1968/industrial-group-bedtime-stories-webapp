@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import db from "../../../firebase"; 
-
+import { auth, provider, db } from '@/FirebaseConfig'; 
 export default function AIGenerator() {
   const [topic, setTopic] = useState("");
   const [summary, setSummary] = useState("");
