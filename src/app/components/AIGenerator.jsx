@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import db from "../../../firebase"; 
 
 export default function AIGenerator() {
   const [topic, setTopic] = useState("");
@@ -15,16 +13,23 @@ export default function AIGenerator() {
     const newSummary = `This is a bedtime story summary about "${topic}".`;
     setSummary(newSummary);
 
-    // Save to Firebase Firestore
+    // Send summary to API route to be saved via Admin SDK
     try {
-      await addDoc(collection(db, "summaries"), {
-        topic,
-        summary: newSummary,
-        createdAt: new Date(),
+      const res = await fetch("/api/save-summary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ topic, summary: newSummary })
       });
-      console.log("✅ Summary saved to Firestore");
+
+      if (res.ok) {
+        console.log("✅ Summary saved via API route");
+      } else {
+        console.error("❌ Failed to save summary via API");
+      }
     } catch (error) {
-      console.error("❌ Error saving summary:", error);
+      console.error("❌ Error sending summary to API:", error);
     }
   };
 
@@ -60,7 +65,7 @@ export default function AIGenerator() {
             background: "#0070f3",
             color: "#fff",
             border: "none",
-            cursor: "pointer",
+            cursor: "pointer"
           }}
         >
           Generate Summary
