@@ -9,7 +9,7 @@ export async function POST(req) {
     const docRef = await db.collection("summaries").add({
       topic,
       summary,
-      createdAt: new Date(), // ✅ use JS Date with Admin SDK
+      createdAt: new Date(), 
     });
 
     return NextResponse.json({ message: "✅ Summary saved", id: docRef.id }, { status: 200 });

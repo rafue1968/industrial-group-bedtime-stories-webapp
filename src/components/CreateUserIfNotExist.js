@@ -12,7 +12,7 @@ const CreateUserIfNotExists = async (user) => {
   const userSnap = await getDoc(userRef);
 
   if (!userSnap.exists()) {
-    await setDoc(userRef, {//add whatevere???!!!!
+    await setDoc(userRef, {
       email: user.email,
       history: [],
       createdAt: serverTimestamp(),
