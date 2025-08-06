@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "../../../lib/firebase"; 
+import { auth } from "../../lib/firebase"; 
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
@@ -74,12 +74,6 @@ export default function AIGenerator() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col items-center justify-center p-4 font-sans">
-      {userId && (
-        <div className="absolute top-4 right-4 bg-white p-3 rounded-lg shadow-md text-sm text-gray-700 border border-gray-200">
-          User ID: <span className="font-mono text-blue-600 font-semibold break-all">{userId}</span>
-        </div>
-      )}
-
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl text-center border border-gray-100">
         <h1 className="text-4xl font-extrabold text-purple-800 mb-6 tracking-tight">
           AI Bedtime Story Generator
