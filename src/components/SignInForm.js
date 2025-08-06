@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { auth, provider } from '@/FirebaseConfig'; // adjust path
+import { auth, provider } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import GoogleSignInUp from './GoogleSignInUp';
+import { useRouter } from 'next/navigation';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -10,22 +11,25 @@ export default function SignInForm() {
   const [error, setError] = useState('');
   const [signSucceeded, setSignSucceeded] = useState('');
 
-  // Handle email/password sign-in
+  const router = useRouter();
+
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
     setError('');
     setSignSucceeded('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setSignSucceeded('Well done');
+      setSignSucceeded('You have successfully signed in!');
+      alert(signSucceeded);
+      router.push("/home")
+
     } catch (err) {
-      setError('Email/password sign-in failed: ' + err.message);
+      alert('Email/password sign-in failed. Please try again.');
     }
   };
 
   return (
     <div>
-      {/* Email/password login */}
       <form onSubmit={handleEmailSignIn}>
         <input
           type="email"
@@ -43,8 +47,8 @@ export default function SignInForm() {
         />
         <button type="submit">Sign in with Email</button>
       </form>
-      {signSucceeded && <p style={{ color: 'green' }}>{signSucceeded}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* {signSucceeded && <p style={{ color: 'green' }}>{signSucceeded}</p>} */}
+      {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
       <div>or</div>
       {/* Google login */}
       <GoogleSignInUp />
