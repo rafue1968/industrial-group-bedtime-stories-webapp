@@ -8,7 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import Loading from "../../components/Loading";
-import { auth, firestore } from "../../../lib/firebase";
+import { auth, db } from "../../../lib/firebase";
 import ShowLogIn from "../../components/ShowLogIn";
 
 export default function Page() {
@@ -19,7 +19,7 @@ export default function Page() {
     
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
               if (user) {
-                const snap = await getDoc(doc(firestore, "users", user.uid));
+                const snap = await getDoc(doc(db, "users", user.uid));
                 // const role = snap.exists() ? snap.data().role : "user";
               } else {
                 router.push("/");

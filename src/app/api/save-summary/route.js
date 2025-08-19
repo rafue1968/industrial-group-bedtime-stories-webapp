@@ -1,66 +1,46 @@
+// src/app/api/save-summary/route.js
 import { NextResponse } from "next/server";
+import { db } from "@lib/firebaseAdmin"; // root/lib alias
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { db } from "../../../../lib/firebaseAdmin";
-import admin from "firebase-admin";
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-    console.error("Critical Error: GEMINI_API_KEY is not set in environment variables.");
-}
-
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+export const runtime = "nodejs";
 
 export async function POST(req) {
-    if (!genAI) {
-        return NextResponse.json(
-            { error: "Server configuration error: Gemini API key missing." },
-            { status: 500 }
-        );
+  try {
+    const { topic, userId } = await req.json();
+    if (!topic || !userId) {
+      return NextResponse.json({ error: "Missing topic or userId" }, { status: 400 });
     }
 
-    try {
-        const { topic, userId } = await req.json();
-
-        if (!topic || typeof topic !== 'string' || topic.trim() === '') {
-            return NextResponse.json(
-                { error: "A topic is required to generate a story." },
-                { status: 400 }
-            );
-        }
-        if (!userId) {
-            return NextResponse.json(
-                { error: "User ID is missing. Cannot save summary without user association." },
-                { status: 400 }
-            );
-        }
-
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" });
-        const prompt = `Generate a concise and imaginative bedtime story summary (around 3-5 sentences) about the topic: "${topic}". Make it suitable for adults.`;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const aiGeneratedText = response.text();
-        console.log(aiGeneratedText);
-
-        const docRef = await db.collection("users").doc(userId).collection("summaries").add({
-            topic: topic,
-            summary: aiGeneratedText,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            userId: userId
-        });
-
-        return NextResponse.json({
-            message: "Summary generated and saved!",
-            id: docRef.id,
-            summary: aiGeneratedText
-        }, { status: 200 });
-
-    } catch (error) {
-        console.error("Failed to generate or save summary:", error);
-        return NextResponse.json(
-            { error: "Failed to generate or save summary. Please try again later." },
-            { status: 500 }
-        );
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "GEMINI_API_KEY missing" }, { status: 500 });
     }
+
+    // generate concise, soothing summary
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const prompt = `Write a concise, cozy bedtime story summary (100-140 words) for the topic: "${topic}". Keep tone gentle and soothing.`;
+
+    const result = await model.generateContent(prompt);
+    const summaryText =
+      result?.response?.text?.() || result?.response?.text || "";
+
+    if (!summaryText?.trim()) {
+      return NextResponse.json({ error: "Empty summary text" }, { status: 502 });
+    }
+
+    const ref = db.collection("users").doc(userId).collection("summaries").doc();
+    await ref.set({
+      topic,
+      text: summaryText,
+      createdAt: new Date(),
+      storyId: null,
+    });
+
+    return NextResponse.json({ summaryId: ref.id, summary: summaryText }, { status: 200 });
+  } catch (e) {
+    console.error("save-summary error:", e);
+    return NextResponse.json({ error: "Failed to save summary" }, { status: 500 });
+  }
 }
