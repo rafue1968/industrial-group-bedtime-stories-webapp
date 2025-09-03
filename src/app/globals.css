@@ -97,6 +97,33 @@ a {
   border-radius: 4px;
 }
 
+/* input { */
+  /* transition: background-color 0.3s ease, color 0.3s ease; */
+  /* color: black; */
+/* } */
+
+/* input::placeholder{ */
+  /* transition: color 0.3s ease; */
+  /* color: grey; */
+/* } */
+
+/* input:focus{ */
+  /* color: white; */
+  /* background-color: rgba(128, 0, 128, 0.3);  */
+/* } */
+
+/* input:hover::placeholder{ */
+  /* color: white; */
+/* } */
+
+/* input:focus::placeholder { */
+  /* color: rgba(255, 255, 255, 0.5); */
+/* } */
+
+/* input:hover { */
+  /* background-color: rgba(128, 0, 128, 0.307); */
+/* } */
+
 .generateBtn {
   background-color: #0070f3;
   color: white;
@@ -127,7 +154,7 @@ a {
 
 .container {
     min-height: 100vh;
-    background-color: #e0e0f8;
+    /* background-color: #e0e0f8; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -306,9 +333,9 @@ a {
   margin-right: 10px;
 }
 
-.logoText {
+/* .logoText {
 
-}
+} */
 
 .navLinks {
     list-style: none;
@@ -390,4 +417,100 @@ a {
         font-size: 1rem;
         padding: 8px;
     }
+}
+
+
+.loading {
+  font-size: 50px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: #29002b;
+  /* text-align: center; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots::after {
+  content: '';
+  display: inline-block;
+  animation: dots 1.2s steps(3, end) infinite;
+}
+
+@keyframes dots {
+  0% {content: '';}
+  33% {content: '.';}
+  66% {content: '..';}
+  100% {content: '...';}
+}
+
+
+/* globals.css */
+.responsiveGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 40px auto 100px auto;
+  padding: 0 20px;
+  align-items: center;
+}
+
+/* 📱 Responsive stacking */
+@media (max-width: 768px) {
+  .responsiveGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .responsiveGrid img {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+}
+
+select {
+  border-radius: 20px;
+  padding: 5px 10px;
+  border-color: #6a1aab;
+}
+
+
+
+html.dark-mode body {
+  background-color: #111 !important;
+  color: #f5f5f5 !important;
+}
+
+html.dark-mode .container,
+html.dark-mode .mainContent,
+html.dark-mode .responsiveGrid,
+html.dark-mode .topicSelectionSection,
+html.dark-mode main {
+  background-color: #1a1a1a !important;
+  color: #f5f5f5 !important;
+}
+
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select {
+  background-color: #333 !important;
+  color: #f5f5f5 !important;
+  border-color: #555 !important;
+}
+
+html.dark-mode button {
+  background-color: #333 !important;
+  color: #f5f5f5 !important;
+}
+
+html.dark-mode .card {
+  background-color: #222 !important;
+  border-color: #444 !important;
+  color: #f5f5f5 !important;
+}
+
+/* Images can stay the same, or you can apply a subtle brightness filter if desired */
+html.dark-mode img {
+  filter: brightness(0.85);
 }
