@@ -47,7 +47,8 @@ export default function Footer() {
           <ul style={listStyle}>
             <li><Link href="/" style={linkStyle}>Home</Link></li>
             <li><Link href="/generate" style={linkStyle}>Generate</Link></li>
-            <li><Link href="/community" style={linkStyle}>Community portal</Link></li>
+            <li><Link href="/community" style={linkStyle}>Community</Link></li>
+            <li><Link href="/my-library" style={linkStyle}>Library</Link></li>
             <li><Link href="/profile" style={linkStyle}>Profile</Link></li>
           </ul>
         </nav>
