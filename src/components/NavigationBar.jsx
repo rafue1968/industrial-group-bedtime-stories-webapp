@@ -13,7 +13,7 @@ export default function NavigationBar() {
         <li><Link href="/">Home</Link></li>
         <li><Link href="/generate">Generate</Link></li>
         <li><Link href="/community">Community</Link></li>
-        <li><Link href="my-library">Library</Link></li>
+        <li><Link href="/my-library">Library</Link></li>
         <li><Link href="/profile">My Profile</Link></li>
       </ul>
     </nav>
