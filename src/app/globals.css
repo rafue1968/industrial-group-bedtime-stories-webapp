@@ -514,3 +514,33 @@ html.dark-mode .card {
 html.dark-mode img {
   filter: brightness(0.85);
 }
+
+.cardLibrary{
+  background-color: #35278c;
+  color: white;
+  margin-top: 80px;
+  width: fit-content;
+  height: fit-content;
+  padding-left: 30px;
+  padding-right: 40px;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  border-radius: 20px;
+}
+
+.readStoryButton, .shareButton, .deleteButton{
+  border-radius: 10px;
+  padding: 3px 13px;
+  border-color: #818C39;
+  margin-left: 30px;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.readStoryButton, .shareButton{
+  color: #35278c;
+}
+
+.deleteButton{
+  color: red;
+}
