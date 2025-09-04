@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "@lib/firebase"; // client SDK
+import { auth } from "../../lib/firebase"; // client SDK
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import axios from "axios";
-import TTSPlayer from "@/components/TTSPlayer";
+import TTSPlayer from "./TTSPlayer";
 import { Loader2 } from "lucide-react";
 
 export default function AIGenerator() {
@@ -28,6 +28,7 @@ export default function AIGenerator() {
   const [genStoryBusy, setGenStoryBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState(null);
+  // const [user, setUser] = useState("");
 
   // auth (anonymous if needed)
   useEffect(() => {
@@ -93,17 +94,36 @@ export default function AIGenerator() {
     }
   };
 
+
+  const saveStory = async () => {
+    if (!story || !userId, !topic) return;
+
+    try {
+        const res = await axios.post("/api/save-story", { story, userId, topic });
+        if (res.status === 200) {
+          alert(`"${topic}" story is saved successfully in the library!`);
+        } else {
+          alert("Failed to save story.");
+        }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving story.");
+    }
+  }
+
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col items-center justify-center p-4 font-sans"
       style={{
         fontFamily: "'Arial', sans-serif",
-        backgroundColor: "#F4E7F7",
         minHeight: "100vh",
         paddingTop: "6rem",
         marginTop: "6rem",
       }}
     >
+
+      <h2 style={{textAlign:"center", color:"darkmagenta", fontFamily:"cursive"}}>Let's Generate Your Story!</h2>
+
       <section
         style={{
           display: "flex",
@@ -112,6 +132,8 @@ export default function AIGenerator() {
           width: "100%",
         }}
       >
+
+
         <div
           style={{
             backgroundColor: "#D2B6F0",
@@ -219,6 +241,7 @@ export default function AIGenerator() {
                       border: "none",
                       borderRadius: "8px",
                       boxShadow: "2px 2px 0px #2B1463",
+                      cursor: "pointer"
                     }}
                   >
                     {genStoryBusy ? "Expanding…" : "Generate Full Story"}
@@ -241,76 +264,103 @@ export default function AIGenerator() {
               </p>
             )}
           </div>
-
-          {/* Full Story + Audio controls (only appear after story exists) */}
+        </div>
+      </section>
+      <section style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "3rem",
+          width: "100%",
+        }}>
+        {/* Full Story + Audio controls (only appear after story exists) */}
           {story && (
-            <div
-              style={{
-                marginTop: "1rem",
-                backgroundColor: "white",
-                padding: "1rem",
-                borderRadius: "10px",
-                boxShadow: "1px 1px 0px #3E1D84",
-                textAlign: "left",
-              }}
-            >
-              <h3 style={{ color: "#3E1D84", marginBottom: "0.5rem" }}>Full Story</h3>
-              <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>{story}</p>
-
-              {/* Audio controls shown only now */}
+            <div style={{
+              backgroundColor: "#D2B6F0",
+              padding: "2rem",
+              borderRadius: "12px",
+              boxShadow: "3px 3px 0px #3E1D84",
+              textAlign: "center",
+              width: "70%",
+              maxWidth: 960,
+            }}>
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                  gap: "1rem",
                   marginTop: "1rem",
-                  marginBottom: "0.75rem",
+                  backgroundColor: "white",
+                  padding: "1rem",
+                  borderRadius: "10px",
+                  boxShadow: "1px 1px 0px #3E1D84",
+                  textAlign: "left",
+                  position: "relative"
                 }}
               >
+                <h3 style={{ color: "#3E1D84", marginBottom: "0.5rem" }}>Full Story</h3>
+                <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>{story}</p>
+
+                {/* Audio controls shown only now */}
                 <div>
-                  <h4 style={{ color: "#3E1D84" }}>Voice</h4>
-                  <select value={voice} onChange={(e) => setVoice(e.target.value)}>
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                  </select>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+                      gap: "1rem",
+                      marginTop: "1rem",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    <div>
+                      <h4 style={{ color: "#3E1D84" }}>Voice</h4>
+                      <select value={voice} onChange={(e) => setVoice(e.target.value)}>
+                        <option value=""></option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <h4 style={{ color: "#3E1D84" }}>Speed</h4>
+                      <select value={speed} onChange={(e) => setSpeed(e.target.value)}>
+                        <option value=""></option>
+                        <option value="normal">Normal</option>
+                        <option value="slow">Slow</option>
+                        <option value="fast">Fast</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 style={{ color: "#3E1D84" }}>Pitch</h4>
+                    <select value={pitch} onChange={(e) => setPitch(e.target.value)}>
+                      <option value=""></option>
+                      <option value="deep">Deep</option>
+                      <option value="neutral">Neutral</option>
+                      <option value="bright">Bright</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div>
-                  <h4 style={{ color: "#3E1D84" }}>Speed</h4>
-                  <select value={speed} onChange={(e) => setSpeed(e.target.value)}>
-                    <option value="normal">Normal</option>
-                    <option value="slow">Slow</option>
-                    <option value="fast">Fast</option>
-                  </select>
+                {/* Player (background chooser lives inside TTSPlayer) */}
+                <TTSPlayer
+                  text={story}
+                  // pass compact, unambiguous props expected by /api/tts
+                  voice={voice}
+                  speed={speed}
+                  pitch={pitch}
+                />
+
+                <div style={{display: "flex", marginTop: "20px", marginBottom: 0, justifyContent: "end"}}>
+                  <button onClick={saveStory} style={{margin: "10px", backgroundColor: "#3E1D84", color: "white", padding: "15px 30px", borderRadius: "20px", border: 0, boxShadow: "0 3px 5px rgba(218, 165, 32, 0.7)", width: "150px", cursor: "pointer"}}><strong>Save Story</strong></button>
+                  <button style={{margin: "10px", backgroundColor: "#3E1D84", color: "white", padding: "15px 30px", borderRadius: "20px", border: 0, boxShadow: "0 3px 5px rgba(218, 165, 32, 0.7)", width: "150px", cursor: "pointer"}}><strong>Share</strong></button>
                 </div>
 
-                <div>
-                  <h4 style={{ color: "#3E1D84" }}>Pitch</h4>
-                  <select value={pitch} onChange={(e) => setPitch(e.target.value)}>
-                    <option value="deep">Deep</option>
-                    <option value="neutral">Neutral</option>
-                    <option value="bright">Bright</option>
-                  </select>
-                </div>
+                {/* {storyId && (
+                  <p style={{ marginTop: 8 }}>
+                    Share link: <a href={`/story/${storyId}`}>/story/{storyId}</a>
+                  </p>
+                )} */}
               </div>
-
-              {/* Player (background chooser lives inside TTSPlayer) */}
-              <TTSPlayer
-                text={story}
-                // pass compact, unambiguous props expected by /api/tts
-                voice={voice}
-                speed={speed}
-                pitch={pitch}
-              />
-
-              {storyId && (
-                <p style={{ marginTop: 8 }}>
-                  Share link: <a href={`/story/${storyId}`}>/story/{storyId}</a>
-                </p>
-              )}
             </div>
           )}
-        </div>
       </section>
     </div>
   );
