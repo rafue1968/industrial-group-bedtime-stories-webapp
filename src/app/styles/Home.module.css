@@ -1,0 +1,157 @@
+.container {
+    min-height: 100vh;
+    background-color: #e0e0f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding-bottom: 50px;
+}
+
+.mainContent {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    padding: 20px 0;
+}
+
+
+.sloganContainer {
+  background-color: #8a2be2;
+  color: white;
+  padding: 20px 40px;
+  border-radius: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: fit-content;
+  text-align: center;
+}
+
+.slogan {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.topicSelectionSection {
+    background-color: #c7a7e8;
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.topicPrompt {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.topicCardsWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.topicCardsContainer {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    padding-bottom: 10px;
+}
+
+.topicCardsContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.arrow {
+    font-size: 3rem;
+    color: #8a2be2;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.surpriseButton {
+    background-color: #8a2be2;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.surpriseButton:hover {
+    background-color: #6a1aab;
+}
+
+
+.settingsIcon {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.5rem;
+    color: #8a2be2;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.settingsIcon:hover {
+  transform: rotate(15deg);
+}
+
+
+@media (max-width: 768px) {
+  .sloganContainer {
+    padding: 15px 25px;
+    font-size: 0.9em;
+  }
+  .slogan {
+    font-size: 1.4em;
+  }
+  .topicPrompt {
+    font-size: 1.2em;
+  }
+  .topicCardsWrapper {
+    flex-direction: row;
+    gap: 10px;
+  }
+  .arrow {
+    font-size: 2em;
+  }
+  .surpriseButton {
+    padding: 12px 25px;
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    width: 95%;
+  }
+  .sloganContainer {
+    width: 90%;
+  }
+  .topicCardsContainer {
+    flex-wrap: nowrap;
+  }
+  .topicCardsWrapper {
+    gap: 5px;
+  }
+}
