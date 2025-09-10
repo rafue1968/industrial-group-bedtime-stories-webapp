@@ -1,0 +1,80 @@
+.main {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.description {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.code {
+  background: #f4f4f4;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.center {
+  margin-bottom: 2rem;
+}
+
+.topicSection {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.topicButtons {
+  margin-bottom: 1rem;
+}
+
+.topicButtons button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.topicButtons .selected {
+  background-color: #d6eaff;
+  font-weight: bold;
+  border-color: #0070f3;
+}
+
+.inputBox {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.generateBtn {
+  background-color: #0070f3;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.generateBtn:hover {
+  background-color: #005bb5;
+}
+
+.summarySection {
+  margin-top: 2rem;
+  max-width: 600px;
+  text-align: left;
+}
+
+.summaryCard {
+  background-color: #f9f9f9;
+  border-left: 5px solid #0070f3;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
