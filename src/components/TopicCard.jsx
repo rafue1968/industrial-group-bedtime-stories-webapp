@@ -11,8 +11,9 @@ export default function TopicCard({ title, imageUrl }){
                 <Image 
                     src={imageUrl}
                     alt={title}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    sizes="(max-width: 768px) 180px, 220px"
+                    style={{ objectFit: "cover" }}
                 />
             </div>
             <h3 className="cardTitle">{title}</h3>

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import { useRouter } from 'next/navigation';
 import GoogleSignInUp from './GoogleSignInUp';
@@ -16,6 +16,8 @@ export default function SignUpForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('')
 
 
   const handleSignUp = async (e) => {
@@ -23,7 +25,7 @@ export default function SignUpForm() {
     setError('');
     setSuccess('');
 
-    if (!email || !password || !confirm) {
+    if (!fullName || !phoneNumber || !email || !password || !confirm) {
       setError('All fields are required.');
       alert(error)
       return;
@@ -37,18 +39,25 @@ export default function SignUpForm() {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await CreateUserIfNotExists(userCredential.user);
+      await CreateUserIfNotExists({
+        ...userCredential.user,
+        displayName: fullName,
+        phoneNumber: phoneNumber
+      });
       setSuccess('Registration successful! Redirecting to login...');
-      alert(`${success}`);
-      setTimeout(() => router.push('/'), 1800);
+      alert(`Registration successful! Redirecting to login...'`);
+      setTimeout(() => router.push('/login'), 1800);
       setTimeout(() => {
         setEmail('');
         setPassword('');
+        setFullName('')
+        setPhoneNumber('')
+
         setConfirm('');
       }, 2000);
     } catch (err) {
       setError('Registration failed: ' + err.message);
-      // alert("Registration failed. Please try again.");
+      alert("Registration failed. Please try again.");
     }
     setLoading(false);
   };
@@ -70,9 +79,8 @@ export default function SignUpForm() {
       }}>
         
           <h2 style={{ marginBottom: "1.5rem", fontWeight: "bold" }}>Sign Up</h2>
-          {/* {success && <p style={{ color: 'green', margin: 0 }}>{success}</p>} */}
-          {/* {error && <p style={{ color: 'red', margin: 0 }}>{error}</p>} */}
-          {error && alert({error})}
+          {success && <p style={{ color: 'green', margin: 0 }}>{success}</p>}
+          {error && <p style={{ color: 'red', margin: 0 }}>{error}</p>}
 
           <form
             onSubmit={handleSignUp}
@@ -84,6 +92,40 @@ export default function SignUpForm() {
             }}
             autoComplete="off"
           >
+
+            <input 
+              type='text'
+              placeholder='Enter your Full Name'
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              autoComplete='name'
+              style={{
+                width: "100%",
+                padding: "0.6rem",
+                marginBottom: "1rem",
+                border: "none",
+                borderRadius: "6px",
+                height: "60px",
+              }}
+            />
+
+            <input 
+              type='text'
+              placeholder='Enter your Phone Number'
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "0.6rem",
+                marginBottom: "1rem",
+                border: "none",
+                borderRadius: "6px",
+                height: "60px",
+              }}
+            />
+
             <input
               type="email"
               placeholder="Email"

@@ -21,8 +21,8 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
       const result = await signInWithPopup(auth, provider);
       await CreateUserIfNotExists(result.user);
       setSignSucceeded("Login successful!");
-      if (pathname !== '/') {
-        setTimeout(() => router.push('/'), 1800);
+      if (pathname !== '/login') {
+        setTimeout(() => router.push('/login'), 1800);
       }
     } catch (err) {
       setError(`Google ${mode} failed: ${err.message}`);
@@ -45,7 +45,9 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
               fontWeight: "bold",
               boxShadow: "2px 2px 0px #2B1463",
               height: "60px",
-        }}>
+              cursor: "pointer"
+        }}
+        >
           <div style={{
             display: "flex",
             justifyContent: "center"
@@ -67,10 +69,10 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
                 </p>
             </div>
       </button>
-      {/* {signSucceeded && <p style={{ color: 'green' }}>{signSucceeded}</p>} */}
-      {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
-      {signSucceeded && alert(`${signSucceeded}`)}
-      {error && alert(`${error}`)}
+      {signSucceeded && <p style={{ color: 'green' }}>{signSucceeded}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* {signSucceeded && alert(`${signSucceeded}`)} */}
+      {/* {error && alert(`${error}`)} */}
     </div>
   );
 }

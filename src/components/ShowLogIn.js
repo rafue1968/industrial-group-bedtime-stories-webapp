@@ -2,15 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from '../../lib/firebase'
+import { auth, firestore } from '../../lib/firebase'
 import { useRouter } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function ShowLogIn() {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser && firebaseUser.uid) {
+        const docRef = doc(firestore, "users", firebaseUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setUser(docSnap.data());
+        } else {
+          setUser({ email: firebaseUser.email });
+        }
+      } else {
+        setUser(null);
+      }
+    });
     return () => unsubscribe();
   }, []);
 
@@ -37,7 +50,7 @@ export default function ShowLogIn() {
         fontSize: '14px',
         display: 'inline-block'
     }}>
-      ✅ Logged in as <strong>{user.email}</strong>
+      ✅ Logged in as <strong>{user.displayName || user.email}</strong>
       <button
         onClick={handleLogout}
         style={{

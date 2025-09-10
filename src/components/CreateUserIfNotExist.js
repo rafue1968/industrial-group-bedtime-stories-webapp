@@ -12,14 +12,21 @@ const CreateUserIfNotExists = async (user) => {
 
   if (!userSnap.exists()) {
     await setDoc(userRef, {
+      displayName: user.displayName || "",
+      phoneNumber: user.phoneNumber,
       email: user.email,
       history: [],
       createdAt: serverTimestamp(),
-      isAdmin: false
+      isAdmin: false,
+      uid: user.uid,
+      lastLoginAt: serverTimestamp(),
     });
     console.log("Firestore user document created.");
   } else {
     console.log("User doc already exists.");
+    await setDoc(userRef, {
+      lastLoginAt: serverTimestamp()
+    }, { merge: true })
   }
 };
     console.log("User doc already exists.");

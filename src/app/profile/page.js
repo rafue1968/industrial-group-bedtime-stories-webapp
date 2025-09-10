@@ -31,12 +31,11 @@ export default function Profile() {
         }, []);
     
     
-        if (loading) return <Loading />;
+        if (loading) return <Loading loading={loading} />;
 
 
   return (
     <>
-      <NavigationBar />
       <div
         style={{
           fontFamily: "'Arial', sans-serif",
@@ -178,3 +177,4 @@ export default function Profile() {
     </>
   );
 }
+

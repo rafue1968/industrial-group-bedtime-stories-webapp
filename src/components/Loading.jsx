@@ -1,11 +1,11 @@
 "use client";
 
 
-export default function Loading(){
+export default function Loading( {loading} ){
+
+    if (!loading) return null;
 
     return(
-        <div>
-            <h1>Loading...</h1>
-        </div>
+        <div className="loading">Loading <span className="dots"></span></div>
     )
 }
