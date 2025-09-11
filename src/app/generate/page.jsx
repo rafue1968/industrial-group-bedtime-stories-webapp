@@ -20,14 +20,13 @@ export default function Page() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Optional: fetch user doc if you need role/metadata
         try {
           await getDoc(doc(firestore, "users", user.uid));
         } catch (e) {
           console.warn("User doc fetch failed (non-blocking):", e);
         }
       } else {
-        router.push("/login"); // redirect unauth users to login
+        router.push("/login");
       }
       setLoading(false);
     });

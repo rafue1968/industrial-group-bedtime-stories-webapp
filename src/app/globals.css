@@ -547,12 +547,84 @@ html.dark-mode img {
 }
 
 .no-stories-saved-box {
-  background-color: #DCC6E0;  /* slightly darker lavender */
-  color: #3E1D84;           /* neutral dark grey text */
+  background-color: #DCC6E0; 
+  color: #3E1D84;           
   padding: 40px 30px;
   border-radius: 20px;
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  border: 1px solid #e5e7eb;  /* soft border */
+  border: 1px solid #e5e7eb;  
 }
+
+
+.profileCard{
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  background-color: #ECDCF2;
+  color: #171717
+}
+
+.profileInput {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #8a2be2;
+  background-color: #fff;
+  color: #171717;
+}
+
+.profileInput::placeholder {
+  color: #51148b;
+}
+
+.profileSaveButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #8a2be2;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.profileSaveButton:hover {
+  background-color: #6a1aab;
+}
+
+.profileDeleteButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #ef4444;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.profileDeleteButton:hover {
+  background-color: #c0262c;
+}
+
+.profileSaveButton, .profileDeleteButton {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  transition: 0.2s;
+}
+
+.profile-p{
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.profileSaveButton, .profileDeleteButton, .profileInput {
+  /* margin-top: 20px; */
+}
+
+

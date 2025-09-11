@@ -11,7 +11,6 @@ import ShowLogIn from "../components/ShowLogIn";
 export default function Page() {
   const router = useRouter();
 
-  // Track auth state so buttons can route correctly
   const [authed, setAuthed] = useState(false);
   const [authReady, setAuthReady] = useState(false);
 
@@ -24,7 +23,6 @@ export default function Page() {
   }, []);
 
   const goGetStarted = () => {
-    // Prefer our tracked state; fallback to currentUser just in case
     const isLoggedIn = authed || !!auth.currentUser;
     router.push(isLoggedIn ? "/generate?surprise=1" : "/login");
   };
@@ -163,7 +161,6 @@ export default function Page() {
         </section>
       </main>
 
-      {/* Renders your login dialog/CTA if needed */}
       <ShowLogIn />
     </div>
   );

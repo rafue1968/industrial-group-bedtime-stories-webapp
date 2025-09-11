@@ -98,7 +98,6 @@ export default function SignInForm() {
         </button>
       </form>
 
-      {/* Link to forgot password */}
       <p style={{ marginTop: '1rem' }}>
         <Link href="/forgot-password" style={{ color: '#B99DD0', fontWeight: 'bold' }}>
           Forgot password?
@@ -108,7 +107,6 @@ export default function SignInForm() {
       <div style={{ margin: '1rem 0' }}>or</div>
       <GoogleSignInUp />
 
-      {/* Link to Sign Up */}
       <p style={{ marginTop: '1rem' }}>
         Don’t have an account?{' '}
         <Link href="/register" style={{ color: '#B99DD0', fontWeight: 'bold' }}>

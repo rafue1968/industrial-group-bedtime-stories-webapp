@@ -29,8 +29,8 @@ export default function ShowLogIn() {
 
   const handleLogout = async () => {
     try {
+      router.push('/login');
       await signOut(auth);
-      router.push('/');
     } catch (err) {
       console.error('Logout failed:', err);
       alert('Logout failed!');

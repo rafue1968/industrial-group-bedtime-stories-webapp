@@ -1,29 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "../../lib/firebase"; // client SDK
+import { auth } from "../../lib/firebase";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import axios from "axios";
 import TTSPlayer from "./TTSPlayer";
 import { Loader2 } from "lucide-react";
 
 export default function AIGenerator() {
-  // phase data
+
   const [topic, setTopic] = useState("");
   const [summaryId, setSummaryId] = useState(null);
   const [summary, setSummary] = useState("");
   const [storyId, setStoryId] = useState(null);
   const [story, setStory] = useState("");
 
-  // length chosen only when making full story
-  const [length, setLength] = useState(10); // 5 | 10 | 20
+  const [length, setLength] = useState(10);
 
-  // audio controls only AFTER full story
-  const [voice, setVoice] = useState("female"); // male | female
-  const [speed, setSpeed] = useState("normal"); // slow | normal | fast
-  const [pitch, setPitch] = useState("neutral"); // deep | neutral | bright
 
-  // framework state
+  const [voice, setVoice] = useState("female"); 
+  const [speed, setSpeed] = useState("normal"); 
+  const [pitch, setPitch] = useState("neutral");
+
   const [loading, setLoading] = useState(false);
   const [genStoryBusy, setGenStoryBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,7 +37,6 @@ export default function AIGenerator() {
       Adventure: "/genres/adventure.png",
     };
 
-  // auth (anonymous if needed)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       if (u) setUserId(u.uid);
@@ -188,7 +185,6 @@ export default function AIGenerator() {
               ))}
             </div>
 
-          {/* Topic input with examples-like placeholder */}
           <div className="mb-8 flex flex-col items-center justify-center gap-4">
             <input
               type="text"
@@ -230,7 +226,6 @@ export default function AIGenerator() {
             </button>
           </div>
 
-          {/* Errors */}
           {errorMessage && (
             <div
               className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-left"
@@ -242,7 +237,6 @@ export default function AIGenerator() {
             </div>
           )}
 
-          {/* Summary card */}
           <div style={{ marginTop: "1rem" }}>
             {summary ? (
               <div
@@ -257,7 +251,6 @@ export default function AIGenerator() {
                 <h3 style={{ color: "#3E1D84", marginBottom: "0.5rem" }}>Summary</h3>
                 <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>{summary}</p>
 
-                {/* Only the length control + Generate Full Story */}
                 <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "0.75rem" }}>
                   <label>
                     Length:&nbsp;
@@ -311,7 +304,7 @@ export default function AIGenerator() {
           marginTop: "3rem",
           width: "100%",
         }}>
-        {/* Full Story + Audio controls (only appear after story exists) */}
+
           {story && (
             <div style={{
               backgroundColor: "#D2B6F0",
@@ -336,7 +329,7 @@ export default function AIGenerator() {
                 <h3 style={{ color: "#3E1D84", marginBottom: "0.5rem" }}>Full Story</h3>
                 <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>{story}</p>
 
-                {/* Audio controls shown only now */}
+
                 <div>
                   <div
                     style={{
@@ -378,10 +371,8 @@ export default function AIGenerator() {
                   </div>
                 </div>
 
-                {/* Player (background chooser lives inside TTSPlayer) */}
                 <TTSPlayer
                   text={story}
-                  // pass compact, unambiguous props expected by /api/tts
                   voice={voice}
                   speed={speed}
                   pitch={pitch}

@@ -1,5 +1,3 @@
-//Location - src/components/Footer.jsx
-//file name - Footer.jsx
 
 "use client";
 import Link from "next/link";
@@ -63,7 +61,7 @@ export default function Footer() {
           gap: "1.25rem",
         }}
       >
-        {/* Brand */}
+
         <div>
           <div
             style={{
@@ -77,7 +75,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Details */}
+
         <nav aria-label="Footer – Details">
           <h4 style={headingStyle}>Details</h4>
           <ul style={listStyle}>
@@ -89,7 +87,7 @@ export default function Footer() {
           </ul>
         </nav>
 
-        {/* Contact */}
+
         <nav aria-label="Footer – Contact">
           <h4 style={headingStyle}>Contact</h4>
           <ul style={listStyle}>
@@ -101,7 +99,6 @@ export default function Footer() {
           </ul>
         </nav>
 
-        {/* Newsletter */}
         <div>
           <h4 style={headingStyle}>Join our newsletter</h4>
           <form

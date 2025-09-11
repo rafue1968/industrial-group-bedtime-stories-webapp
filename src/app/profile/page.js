@@ -5,176 +5,192 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { auth, firestore } from "../../../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged,signOut } from "firebase/auth";
 import Loading from "../../components/Loading"
 import NavigationBar from "../../components/NavigationBar";
+import { getDisplayName } from "next/dist/shared/lib/utils";
 
 
-export default function Profile() {
-  // ✅ Redirect to /login if user is not logged in
-  // useAuthRedirect();
+
+
+export default function ProfilePage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
-    const router = useRouter();
-  
-    useEffect(() => {
-    
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-              if (user) {
-                const snap = await getDoc(doc(firestore, "users", user.uid));
-                // const role = snap.exists() ? snap.data().role : "user";
-              } else {
-                router.push("/");
-              }
-              setLoading(false);
-            });
-          return () => unsubscribe();
-        }, []);
-    
-    
-        if (loading) return <Loading loading={loading} />;
+  const [userProfile, setUserProfile] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formValues, setFormValues] = useState({});
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(firestore, "users", user.uid));
+
+        const data = userDoc.data();
+        const profile = {
+          displayName: data.displayName || "",
+          email: data.email || user.email,
+          phoneNumber: data.phoneNumber || "",
+          password: "", 
+        };
+
+        setUserProfile(profile);   
+        setFormValues(profile);   
+        setLoading(false); 
+
+      } else {
+          alert("Sorry. Please login first.")
+          router.push("/login")
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleInputChange = (e) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveProfile = async () => {
+    if (!auth.currentUser) return alert("Not logged in");
+
+    const changes = {};
+    for (let key in formValues) {
+      if (formValues[key] !== userProfile[key] && key !== "password") {
+        changes[key] = formValues[key];
+      }
+    }
+
+    if (formValues.password.trim() !== "") {
+      changes.password = formValues.password;
+    }
+
+
+    if (Object.keys(changes).length === 0) {
+      alert("No changes made");
+      setIsEditing(false);
+      return;
+    }
+
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch("/api/update-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(changes),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Profile updated successfully");
+        setUserProfile({ ...userProfile, ...changes });
+        setIsEditing(false);
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("Unexpected error occurred");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!auth.currentUser) return alert("Not logged in");
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? All your data will be permanently lost!"
+    );
+    if (!confirmed) return;
+
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch("/api/update-profile", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Account deleted successfully");
+        await signOut(auth);
+        router.push("/login");
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Unexpected error occurred");
+    }
+  };
+
+  if (loading) return <p><Loading /></p>;
 
   return (
-    <>
-      <div
-        style={{
-          fontFamily: "'Arial', sans-serif",
-          backgroundColor: "#F4E7F7",
-          minHeight: "100vh",
-          paddingTop: "6rem",
-        }}
-      >
-        {/* Profile Section */}
-        <section
-          style={{
-            margin: "2rem auto",
-            width: "85%",
-            backgroundColor: "white",
-            padding: "2rem",
-            borderRadius: "12px",
-            boxShadow: "3px 3px 0px #3E1D84",
-          }}
-        >
-          {/* Profile Header */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div
-              style={{
-                width: "80px",
-                height: "80px",
-                borderRadius: "50%",
-                backgroundColor: "#D9D9D9",
-              }}
-            ></div>
-            <div>
-              <h2 style={{ margin: 0, color: "#3E1D84" }}>Name</h2>
-              <p style={{ margin: 0 }}>
-                Tokens: <span style={{ color: "#FFD700" }}>⭐ 20</span>
-              </p>
-            </div>
-          </div>
+    <div style={{ padding: "20px", textAlign: "center" }} className="profileCard">
+      <h1>My Profile</h1>
 
-          {/* Saved & Shared Stories */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "2rem",
-              marginTop: "2rem",
-            }}
-          >
-            {/* Saved Stories */}
-            <div>
-              <h3 style={{ color: "#3E1D84", marginBottom: "1rem" }}>
-                Saved Stories:
-              </h3>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "1rem",
-                  background: "linear-gradient(to bottom, #B99DD0, #F4E7F7)",
-                  padding: "1rem",
-                  borderRadius: "12px",
-                }}
-              >
-                {[
-                  "In the forest",
-                  "Adventure in Europe",
-                  "Hero Adventure",
-                  "Love at first sight",
-                ].map((title, i) => (
-                  <div key={i} style={{ textAlign: "center" }}>
-                    <div
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        borderRadius: "50%",
-                        backgroundColor: "#D9D9D9",
-                        margin: "0 auto",
-                      }}
-                    ></div>
-                    <p
-                      style={{
-                        marginTop: "0.5rem",
-                        fontWeight: "bold",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {title}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Shared Stories */}
-            <div>
-              <h3 style={{ color: "#3E1D84", marginBottom: "1rem" }}>
-                Shared Stories:
-              </h3>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  background: "linear-gradient(to bottom, #B99DD0, #F4E7F7)",
-                  padding: "1rem",
-                  borderRadius: "12px",
-                }}
-              >
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      background: "white",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "8px",
-                      boxShadow: "1px 1px 0px #3E1D84",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        backgroundColor: "#D9D9D9",
-                      }}
-                    ></div>
-                    <div style={{ display: "flex", gap: "0.8rem" }}>
-                      <span style={{ color: "red" }}>❤️</span>
-                      <span style={{ color: "#3E1D84" }}>💬</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </>
+      {isEditing ? (
+        <div style={{ maxWidth: "500px", margin: "0 auto", textAlign: "left" }}>
+          <p className="profile-p">
+            <strong>Full Name:</strong>
+            <input
+              type="text"
+              name="displayName"
+              value={formValues.displayName}
+              onChange={handleInputChange}
+              className="profileInput"
+            />
+          </p>
+          <p className="profile-p">
+            <strong>Email:</strong>
+            <input
+              type="email"
+              name="email"
+              value={formValues.email}
+              onChange={handleInputChange}
+              className="profileInput"
+            />
+          </p>
+          <p className="profile-p">
+            <strong>Phone:</strong>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={formValues.phoneNumber}
+              onChange={handleInputChange}
+              className="profileInput"
+            />
+          </p>
+          <p className="profile-p">
+            <strong>Password:</strong>
+            <input
+              type="password"
+              name="password"
+              value={formValues.password}
+              placeholder="New Password"
+              onChange={handleInputChange}
+              className="profileInput"
+            />
+          </p>
+          <button onClick={handleSaveProfile} className="profileSaveButton">Save Changes</button>
+          <button onClick={() => setIsEditing(false)} className="profileDeleteButton">Cancel</button>
+        </div>
+      ) : (
+        <div style={{ maxWidth: "500px", margin: "0 auto", textAlign: "left" }}>
+          <p className="profile-p" ><strong>Full Name:</strong> {userProfile.displayName}</p>
+          <p className="profile-p" ><strong>Email:</strong> {userProfile.email}</p>
+          <p className="profile-p" ><strong>Phone:</strong> {userProfile.phoneNumber}</p>
+          <p className="profile-p" ><strong>Password:</strong> *****</p>
+          <button onClick={() => setIsEditing(true)} className="profileSaveButton">Update Profile</button>
+          <button onClick={handleDeleteAccount} className="profileDeleteButton">
+            Delete Account
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
-

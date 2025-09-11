@@ -70,7 +70,6 @@ export default function SignUpForm() {
       <div style={{
           backgroundColor: "#3E1D84",
           color: "white",
-          // padding: "2rem",
           padding:"50px",
           borderRadius: "20px",
           width: "500px",
@@ -85,10 +84,7 @@ export default function SignUpForm() {
           <form
             onSubmit={handleSignUp}
             style={{
-              // display: 'flex',
-              // flexDirection: 'column',
               gap: 16,
-              // padding:"30px"
             }}
             autoComplete="off"
           >
@@ -168,10 +164,8 @@ export default function SignUpForm() {
               style={{
                 width: "100%",
                 padding: "0.6rem",
-                // marginBottom: "1.5rem",
                 border: "none",
                 borderRadius: "6px",
-                // cursor:"pointer",
                 marginBottom: "1rem",
                 height: "60px",
             }}

@@ -71,8 +71,6 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
       </button>
       {signSucceeded && <p style={{ color: 'green' }}>{signSucceeded}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {/* {signSucceeded && alert(`${signSucceeded}`)} */}
-      {/* {error && alert(`${error}`)} */}
     </div>
   );
 }

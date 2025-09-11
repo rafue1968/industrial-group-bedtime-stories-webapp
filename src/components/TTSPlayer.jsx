@@ -2,17 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Azure-only TTS player with ambience.
- * Props:
- *   text: required
- *   voice: "male" | "female"
- *   speed: "normal" | "slow" | "fast"
- *   pitch: "deep" | "neutral" | "bright"   <-- accepted (mapped to Azure "tone")
- *   tone:  "deep" | "neutral" | "bright"   <-- optional explicit override
- *   length: "short" | "medium" | "long" (handled in backend)
- *   background: "none" | "rain" | "ocean" | "breeze" | "white"
- */
 const BG = {
   none: null,
   rain: "/ambience/rain.mp3",
@@ -27,8 +16,8 @@ export default function TTSPlayer({
   speed,
   length,
   background,
-  pitch, // callers pass this today
-  tone,  // optional explicit tone override
+  pitch,
+  tone,  
 }) {
   const [bg, setBg] = useState(background || "none");
   const [bgVol, setBgVol] = useState(0.3);
@@ -38,7 +27,6 @@ export default function TTSPlayer({
   const bgRef = useRef(null);
   const urlRef = useRef(null);
 
-  // Backward compatibility: if `tone` not provided, derive from `pitch`
   const effectiveTone =
     tone ??
     (pitch === "deep" ? "deep" : pitch === "bright" ? "bright" : "neutral");
@@ -48,7 +36,6 @@ export default function TTSPlayer({
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
       stopAll();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

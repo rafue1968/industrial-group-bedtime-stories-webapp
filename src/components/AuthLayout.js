@@ -12,7 +12,6 @@ export default function AuthLayout({ title, subtitle, illustrationSrc, illustrat
         backgroundColor: "#F9F6FB",
       }}
     >
-      {/* Centered Card */}
       <div
         style={{
           display: "flex",
@@ -24,7 +23,6 @@ export default function AuthLayout({ title, subtitle, illustrationSrc, illustrat
           width: "100%",
         }}
       >
-        {/* Left side with illustration */}
         <div
           style={{
             flex: 1,
@@ -49,7 +47,6 @@ export default function AuthLayout({ title, subtitle, illustrationSrc, illustrat
           )}
         </div>
 
-        {/* Right side with login form */}
         <div
           style={{
             flex: 1,

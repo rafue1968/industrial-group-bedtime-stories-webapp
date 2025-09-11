@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { firestore } from "../../lib/firebase"; // client SDK
+import { firestore } from "../../lib/firebase";
 import {
   collection,
   onSnapshot,
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 export default function SavedStoriesList({ userId }) {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sharing, setSharing] = useState({}); // { [storyId]: boolean }
+  const [sharing, setSharing] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -76,7 +76,6 @@ export default function SavedStoriesList({ userId }) {
       if (!res.ok) throw new Error(j.error || "Failed to share");
 
       alert("🎉 Shared to Community!");
-      // router.push("/community"); // optional redirect
     } catch (err) {
       console.error(err);
       alert("Failed to share story. Please try again.");
@@ -106,7 +105,6 @@ export default function SavedStoriesList({ userId }) {
       <div style={{ width: "100%", maxWidth: 1100 }}>
         <h2 style={{ color: "#3E1D84", marginBottom: "1rem" }}>Saved Stories</h2>
 
-        {/* Responsive, aligned grid */}
         <div
           style={{
             display: "grid",
@@ -124,7 +122,7 @@ export default function SavedStoriesList({ userId }) {
                 padding: "1rem",
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 220, // ensures equal card heights
+                minHeight: 220,
               }}
             >
               <header style={{ marginBottom: 8 }}>
@@ -146,14 +144,13 @@ export default function SavedStoriesList({ userId }) {
                 )}
               </header>
 
-              {/* Preview */}
               <p
                 style={{
                   color: "#4A3C72",
                   fontSize: "0.95rem",
                   lineHeight: 1.5,
                   marginTop: 8,
-                  marginBottom: "auto", // push actions to bottom
+                  marginBottom: "auto",
                   whiteSpace: "pre-wrap",
                   overflow: "hidden",
                   display: "-webkit-box",
@@ -165,7 +162,6 @@ export default function SavedStoriesList({ userId }) {
                 {story.story && story.story.length > 300 ? "…" : ""}
               </p>
 
-              {/* Actions */}
               <div
                 style={{
                   display: "grid",

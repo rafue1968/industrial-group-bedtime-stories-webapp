@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-// import styles from "../styles/TopicCard.module.css" //"../styles/TopicCard.module.css";
 
 
 export default function TopicCard({ title, imageUrl }){
