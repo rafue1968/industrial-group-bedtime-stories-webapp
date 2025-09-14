@@ -21,8 +21,8 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
       const result = await signInWithPopup(auth, provider);
       await CreateUserIfNotExists(result.user);
       setSignSucceeded("Login successful!");
-      if (pathname !== '/login') {
-        setTimeout(() => router.push('/login'), 1800);
+      if (pathname !== '/community') {
+        setTimeout(() => router.push('/community'), 1800);
       }
     } catch (err) {
       setError(`Google ${mode} failed: ${err.message}`);

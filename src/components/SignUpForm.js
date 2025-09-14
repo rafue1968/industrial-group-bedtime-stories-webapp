@@ -44,9 +44,8 @@ export default function SignUpForm() {
         displayName: fullName,
         phoneNumber: phoneNumber
       });
-      setSuccess('Registration successful! Redirecting to login...');
-      alert(`Registration successful! Redirecting to login...'`);
-      setTimeout(() => router.push('/login'), 1800);
+      setSuccess('Registration successful! Redirecting to Community Portal...');
+      setTimeout(() => router.push('/community'), 1800);
       setTimeout(() => {
         setEmail('');
         setPassword('');
@@ -56,8 +55,7 @@ export default function SignUpForm() {
         setConfirm('');
       }, 2000);
     } catch (err) {
-      setError('Registration failed: ' + err.message);
-      alert("Registration failed. Please try again.");
+      setError('Registration failed.');
     }
     setLoading(false);
   };
@@ -160,6 +158,7 @@ export default function SignUpForm() {
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
               required
+              maxLength={16}
               autoComplete="new-password"
               style={{
                 width: "100%",

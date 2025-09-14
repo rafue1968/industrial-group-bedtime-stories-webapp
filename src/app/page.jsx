@@ -127,18 +127,7 @@ export default function Page() {
           className="topicSelectionSection"
           style={{ position: "relative", marginBottom: "100px" }}
         >
-          <h2 className="topicPrompt">Choose a topic or provide a description:</h2>
-          <input
-            type="text"
-            placeholder="Enter a topic."
-            style={{
-              height: "45px",
-              marginBottom: "40px",
-              width: "80%",
-              padding: "15px",
-              borderRadius: "20px",
-            }}
-          />
+          <h2 className="topicPrompt">Are you ready to unwind?</h2>
           <div className="topicCardsWrapper">
             <div className="arrow">&lt;</div>
             <div className="topicCardsContainer">
@@ -153,7 +142,7 @@ export default function Page() {
 
           <button
             className="surpriseButton"
-            style={{ position: "absolute", top: "340px" }}
+            style={{ position: "absolute", top: "260px" }}
             onClick={goSurprise}
           >
             Surprise Me!

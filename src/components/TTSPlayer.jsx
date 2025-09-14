@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const BG = {
   none: null,
-  rain: "/ambience/rain.mp3",
+  rain: "/ambience/rainstorm.mp3",
   ocean: "/ambience/ocean.mp3",
   breeze: "/ambience/breeze.mp3",
   white: "/ambience/white.mp3",
@@ -12,53 +12,58 @@ const BG = {
 
 export default function TTSPlayer({
   text,
-  voice,
-  speed,
-  length,
-  background,
-  pitch,
-  tone,  
+  voice,      // "male" | "female"
+  speed,      // "slow" | "normal" | "fast"
+  length,     // optional metadata
+  background, // initial ambience choice
+  pitch,      // "deep" | "neutral" | "bright"
+  tone,       // optional; if present overrides derived tone
 }) {
   const [bg, setBg] = useState(background || "none");
   const [bgVol, setBgVol] = useState(0.3);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(false);      // generating audio from API
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const speechRef = useRef(null);
-  const bgRef = useRef(null);
-  const urlRef = useRef(null);
+  const speechRef = useRef(null); // HTMLAudioElement for narration
+  const bgRef = useRef(null);     // HTMLAudioElement for ambience
+  const urlRef = useRef(null);    // blob URL of generated narration
 
+  // Prefer explicit tone if provided; otherwise derive from pitch
   const effectiveTone =
     tone ??
     (pitch === "deep" ? "deep" : pitch === "bright" ? "bright" : "neutral");
 
+  // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      if (urlRef.current) URL.revokeObjectURL(urlRef.current);
-      stopAll();
-    };
+    return () => stopAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Keep ambience volume synced
   useEffect(() => {
     if (bgRef.current) bgRef.current.volume = bgVol;
   }, [bgVol]);
 
-  const stopAll = () => {
-    if (speechRef.current) {
+  const revokeUrl = () => {
+    if (urlRef.current) {
       try {
-        speechRef.current.pause();
-        speechRef.current.currentTime = 0;
+        URL.revokeObjectURL(urlRef.current);
       } catch {}
-    }
-    if (bgRef.current) {
-      try {
-        bgRef.current.pause();
-        bgRef.current.currentTime = 0;
-      } catch {}
-      bgRef.current = null;
+      urlRef.current = null;
     }
   };
 
-  const playBg = () => {
+  const stopAmbience = () => {
+    if (!bgRef.current) return;
+    try {
+      bgRef.current.pause();
+      bgRef.current.currentTime = 0;
+    } catch {}
+    bgRef.current = null;
+  };
+
+  const playAmbience = () => {
     const src = BG[bg];
     if (!src) return;
     const audio = new Audio(src);
@@ -68,8 +73,57 @@ export default function TTSPlayer({
     audio.play().catch(() => {});
   };
 
+  const stopAll = () => {
+    try {
+      if (speechRef.current) {
+        speechRef.current.pause();
+        speechRef.current.currentTime = 0;
+      }
+    } catch {}
+    stopAmbience();
+    revokeUrl();
+    setBusy(false);
+    setIsPlaying(false);
+    setIsPaused(false);
+  };
+
+  const pause = () => {
+    const a = speechRef.current;
+    if (!a) return;
+    if (!a.paused) {
+      try {
+        a.pause();
+        if (bgRef.current && !bgRef.current.paused) bgRef.current.pause();
+      } catch {}
+      setIsPlaying(false);
+      setIsPaused(true);
+    }
+  };
+
+  const resume = async () => {
+    const a = speechRef.current;
+    if (!a) return;
+    if (a.paused && a.currentTime > 0) {
+      try {
+        // resume ambience if selected
+        if (bgRef.current) {
+          bgRef.current.play().catch(() => {});
+        } else if (bg !== "none") {
+          playAmbience();
+        }
+        await a.play();
+        setIsPlaying(true);
+        setIsPaused(false);
+      } catch {
+        // If autoplay fails, leave UI in paused state
+      }
+    }
+  };
+
   const play = async () => {
-    if (!text?.trim()) return;
+    if (!text?.trim() || busy) return;
+
+    // Fresh start from the beginning (re-generate audio)
     stopAll();
     setBusy(true);
 
@@ -79,17 +133,26 @@ export default function TTSPlayer({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text,
-          voice,
-          tone: effectiveTone,
-          speed,
+          voice,               // "male" | "female"
+          tone: effectiveTone, // "deep" | "neutral" | "bright"
+          pitch,               // send raw UI selection too
+          speed,               // "slow" | "normal" | "fast"
           length,
           background: bg,
         }),
       });
 
       if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || `Azure TTS failed (${res.status})`);
+        const ct = res.headers.get("content-type") || "";
+        let reason = `Azure TTS failed (${res.status})`;
+        if (ct.includes("application/json")) {
+          const j = await res.json().catch(() => ({}));
+          if (j?.error) reason = j.error + (j.detail ? ` — ${j.detail}` : "");
+        } else {
+          const t = await res.text().catch(() => "");
+          if (t) reason = `${reason}: ${t.slice(0, 300)}`;
+        }
+        throw new Error(reason);
       }
 
       const blob = await res.blob();
@@ -98,16 +161,37 @@ export default function TTSPlayer({
 
       const audio = new Audio(url);
       speechRef.current = audio;
-      audio.onplay = () => playBg();
-      audio.onended = () => {
-        stopAll();
-        setBusy(false);
+
+      audio.onplay = () => {
+        // start ambience when narration actually starts
+        playAmbience();
+        setIsPlaying(true);
+        setIsPaused(false);
+        setBusy(false); // generation phase is over
       };
+
+      audio.onpause = () => {
+        setIsPlaying(false);
+        setIsPaused(true);
+        if (bgRef.current && !bgRef.current.paused) bgRef.current.pause();
+      };
+
+      audio.onended = () => {
+        // finished; reset UI and resources
+        stopAll();
+      };
+
+      audio.onerror = () => {
+        console.error("Narration audio error");
+        stopAll();
+        alert("Sorry, narration could not be played.");
+      };
+
       await audio.play();
     } catch (e) {
       console.error(e);
       setBusy(false);
-      alert("Sorry, narration could not be generated.");
+      alert(`Sorry, narration could not be generated.\n${e?.message || ""}`);
     }
   };
 
@@ -134,15 +218,32 @@ export default function TTSPlayer({
               max="1"
               step="0.05"
               value={bgVol}
-              onChange={(e) => setBg(+e.target.value)}
+              onChange={(e) => setBgVol(+e.target.value)}
+              aria-label="Background volume"
             />
           </label>
         )}
 
-        <button onClick={play} disabled={busy}>
+        {/* Controls */}
+        <button onClick={play} disabled={busy || isPlaying || isPaused} aria-label="Play narration">
           {busy ? "Generating…" : "▶ Play"}
         </button>
-        <button onClick={stopAll}>⏹ Stop</button>
+
+        <button onClick={pause} disabled={!isPlaying} aria-label="Pause narration">
+          ❚❚ Pause
+        </button>
+
+        <button onClick={resume} disabled={!isPaused} aria-label="Resume narration">
+          ► Resume
+        </button>
+
+        <button
+          onClick={stopAll}
+          disabled={!isPlaying && !isPaused && !busy}
+          aria-label="Stop narration"
+        >
+          ⏹ Stop
+        </button>
       </div>
     </div>
   );

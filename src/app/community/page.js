@@ -193,7 +193,7 @@ export default function CommunityPage() {
     }
 
     // make sure it's in the user's library; if not, save it first
-    const saveRef = doc(db, "users", user.uid, "savedStories", story.id);
+    const saveRef = doc(firestore, "users", user.uid, "savedStories", story.id);
     const existing = await getDoc(saveRef);
     if (!existing.exists()) {
       await setDoc(saveRef, {

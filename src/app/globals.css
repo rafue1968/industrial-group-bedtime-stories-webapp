@@ -561,11 +561,12 @@ html.dark-mode img {
 .profileCard{
   max-width: 500px;
   margin: 40px auto;
-  padding: 30px;
+  padding: 50px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   background-color: #ECDCF2;
-  color: #171717
+  color: #171717;
+  height: 400px
 }
 
 .profileInput {
