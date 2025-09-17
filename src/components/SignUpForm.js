@@ -55,6 +55,7 @@ export default function SignUpForm() {
       }, 2000);
     } catch (err) {
       setError('Registration failed.');
+      console.log(err);
     }
     setLoading(false);
   };

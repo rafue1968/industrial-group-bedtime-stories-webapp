@@ -1,5 +1,5 @@
 import { setDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
-import { auth, provider, firestore } from '../../lib/firebase'; 
+import { firestore } from '../../lib/firebase'; 
 const CreateUserIfNotExists = async (user) => {
   console.log("CreateUserIfNotExists received:", user);
   if (!user) {

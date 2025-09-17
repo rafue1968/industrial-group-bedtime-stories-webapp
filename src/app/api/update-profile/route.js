@@ -1,4 +1,4 @@
-import { db, auth } from "../../../../lib/firebaseAdmin";
+import { db, adminAuth } from "../../../../lib/firebaseAdmin";
 
 export async function POST(req) {
   try {
@@ -20,11 +20,11 @@ export async function POST(req) {
       );
     }
 
-    const decodedToken = await auth.verifyIdToken(idToken);
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
     if(displayName){
-    await auth.updateUser(uid, { displayName });
+    await adminAuth.updateUser(uid, { displayName });
     await db.collection("users").doc(uid).update({ displayName });
     }
 
@@ -34,11 +34,11 @@ export async function POST(req) {
     }
 
     if (password) {
-      await auth.updateUser(uid, { password });
+      await adminAuth.updateUser(uid, { password });
     }
 
     if (email) {
-      await auth.updateUser(uid, { email });
+      await adminAuth.updateUser(uid, { email });
       await db.collection("users").doc(uid).update({ email });
     }
 
@@ -63,7 +63,7 @@ export async function DELETE(req) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     }
 
-    const decodedToken = await auth.verifyIdToken(idToken);
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
     await db.collection("users").doc(uid).delete();
@@ -82,7 +82,7 @@ export async function DELETE(req) {
   await batch2.commit();
 }
 
-    await auth.deleteUser(uid);
+    await adminAuth.deleteUser(uid);
 
     return new Response(
       JSON.stringify({ success: true, message: "Account and all related data deleted successfully" }),

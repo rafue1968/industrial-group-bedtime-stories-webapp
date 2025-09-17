@@ -4,7 +4,6 @@ import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import GoogleSignInUp from './GoogleSignInUp';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -98,21 +97,9 @@ export default function SignInForm() {
         </button>
       </form>
 
-      <p style={{ marginTop: '1rem' }}>
-        <Link href="/forgot-password" style={{ color: '#B99DD0', fontWeight: 'bold' }}>
-          Forgot password?
-        </Link>
-      </p>
 
       <div style={{ margin: '1rem 0' }}>or</div>
       <GoogleSignInUp />
-
-      <p style={{ marginTop: '1rem' }}>
-        Don’t have an account?{' '}
-        <Link href="/register" style={{ color: '#B99DD0', fontWeight: 'bold' }}>
-          Sign up
-        </Link>
-      </p>
     </div>
   );
 }

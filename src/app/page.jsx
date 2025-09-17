@@ -6,6 +6,8 @@ import { auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import ShowLogIn from "../components/ShowLogIn";
+import Image from "next/image";
+
 
 export default function Page() {
   const router = useRouter();
@@ -47,9 +49,11 @@ export default function Page() {
 
         <div style={{ marginTop: "50px", marginBottom: "50px" }}>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <img
-              src="./space-image.jpg"
+            <Image
+              src="/space-image.jpg"
               alt="space"
+              width={800}
+              height={600}
               style={{
                 width: "80%",
                 height: "80%",
@@ -114,9 +118,11 @@ export default function Page() {
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <img
+            <Image
               src="/bed-icon.png"
               alt="bed"
+              width={200}
+              height={200}
               style={{ width: "80%", height: "80%" }}
             />
           </div>

@@ -6,6 +6,7 @@ import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import axios from "axios";
 import TTSPlayer from "./TTSPlayer";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 export default function AIGenerator() {
 
@@ -178,7 +179,7 @@ export default function AIGenerator() {
                       e.currentTarget.style.boxShadow = topic === name ? "0 10px 25px rgba(62,29,132,0.4)" : "0 4px 10px rgba(62,29,132,0.15)";
                     }}
                   >
-                    <img src={icon} alt="name" style={{width: "60%", height:"60%"}} />
+                    <Image src={icon} alt={name} width={60} height={60} style={{ objectFit: "contain"}}   />
                   </div>
                 </div>
               ))}

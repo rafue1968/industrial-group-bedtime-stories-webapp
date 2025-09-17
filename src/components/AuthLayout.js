@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function AuthLayout({ title, subtitle, illustrationSrc, illustrationAlt, children }) {
   return (
     <main
@@ -39,10 +41,12 @@ export default function AuthLayout({ title, subtitle, illustrationSrc, illustrat
           <h1 style={{ marginBottom: "0.2rem", fontSize: "1.8rem", fontWeight: "bold" }}>{title}</h1>
           <p style={{ marginBottom: "1.5rem", fontSize: "1rem" }}>{subtitle}</p>
           {illustrationSrc && (
-            <img
+            <Image
               src={illustrationSrc}
               alt={illustrationAlt || "Illustration"}
-              style={{ maxWidth: "250px", height: "auto" }}
+              width={250}      
+              height={250} 
+              style={{ height: "auto", objectFit: "contain" }}
             />
           )}
         </div>

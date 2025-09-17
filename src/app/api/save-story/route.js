@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { admin, auth } from "../../../../lib/firebaseAdmin";
+import { admin } from "../../../../lib/firebaseAdmin";
 
 export async function POST(req) {
     const { story, userId, topic } = await req.json();
