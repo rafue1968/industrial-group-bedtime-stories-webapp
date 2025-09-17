@@ -2,16 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Azure-only TTS player with ambience.
- * Props:
- *   text: required
- *   voice: "male" | "female"
- *   tone: "neutral" | "calm" | "deep"
- *   speed: "normal" | "slow" | "fast"
- *   length: "short" | "medium" | "long" (handled in backend)
- *   background: "none" | "rain" | "ocean" | "breeze" | "white"
- */
 const BG = {
   none: null,
   rain: "/ambience/rain.mp3",

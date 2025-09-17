@@ -1,6 +1,5 @@
-// src/app/api/save-summary/route.js
 import { NextResponse } from "next/server";
-import { db } from "../../../../lib/firebaseAdmin"; // root/lib alias
+import { db } from "../../../../lib/firebaseAdmin"; 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const runtime = "nodejs";
@@ -17,7 +16,6 @@ export async function POST(req) {
       return NextResponse.json({ error: "GEMINI_API_KEY missing" }, { status: 500 });
     }
 
-    // Generate concise, soothing summary
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const prompt = `Write a concise, cozy bedtime story summary (100-140 words) for the topic: "${topic}". Keep tone gentle and soothing.`;

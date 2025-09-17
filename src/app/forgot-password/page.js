@@ -1,4 +1,3 @@
-// app/forgot-password/page.js
 import ForgotPasswordForm from "../../components/ForgotPassword";
 
 export default function ForgotPasswordPage() {

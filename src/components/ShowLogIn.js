@@ -40,29 +40,11 @@ export default function ShowLogIn() {
   if (!user) return null;
 
   return (
-    <div style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        background: '#ecf0f1',
-        padding: '10px 15px',
-        borderRadius: '10px',
-        fontSize: '14px',
-        display: 'inline-block'
-    }}>
+    <div className='showLoginBox'>
       ✅ Logged in as <strong>{user.displayName || user.email}</strong>
       <button
         onClick={handleLogout}
-        style={{
-          marginLeft: 10,
-          padding: '3px 10px',
-          borderRadius: '6px',
-          border: 'none',
-          background: '#e74c3c',
-          color: '#fff',
-          cursor: 'pointer',
-          fontSize: '14px'
-        }}
+        className='logoutButton'
       >
         Logout
       </button>

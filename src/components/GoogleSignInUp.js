@@ -55,7 +55,6 @@ export default function GoogleSignInUp({ mode = "sign in" }) {
               {<Image width={30} height={30} src="/google-logo.png" alt='google-logo' style={{
                 alignItems: "center",
                 justifyContent: "center",
-                // marginLeft: "20px"
               }} />}
               <p style={{
                 marginTop:"8px",

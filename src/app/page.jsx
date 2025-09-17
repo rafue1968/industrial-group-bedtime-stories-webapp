@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import NavigationBar from "../components/NavigationBar";
 import TopicCard from "../components/TopicCard";
 import { auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";

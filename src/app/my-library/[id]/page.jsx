@@ -7,7 +7,6 @@ import { useParams, useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import Loading from "@/components/Loading";
 import TTSPlayer from "@/components/TTSPlayer";
-import NavigationBar from "@/components/NavigationBar";
 
 export default function Page() {
   const { id } = useParams();
@@ -19,10 +18,10 @@ export default function Page() {
   const [shareBusy, setShareBusy] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // audio controls (after full story)
+
   const [voice, setVoice] = useState("female");
   const [speed, setSpeed] = useState("normal");
-  const [pitch, setPitch] = useState("neutral"); // deep | neutral | bright
+  const [pitch, setPitch] = useState("neutral"); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -127,7 +126,6 @@ export default function Page() {
 
             <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>{story.story}</p>
 
-            {/* Playback Controls */}
             <div>
               <div
                 style={{

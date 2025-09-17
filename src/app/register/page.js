@@ -24,10 +24,8 @@ export default function RegisterPage() {
       </h2>
       <p style={{ marginBottom: "1.5rem", color: "#555" }}>Input your details</p>
 
-      {/* Form */}
       <SignUpForm />
 
-      {/* Links Section */}
       <div style={{ marginTop: "2rem", textAlign: "center" }}>
         <p style={{ marginBottom: "1rem", fontSize: "0.95rem" }}>
           Already have an account?{" "}

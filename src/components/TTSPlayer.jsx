@@ -12,35 +12,31 @@ const BG = {
 
 export default function TTSPlayer({
   text,
-  voice,      // "male" | "female"
-  speed,      // "slow" | "normal" | "fast"
-  length,     // optional metadata
-  background, // initial ambience choice
-  pitch,      // "deep" | "neutral" | "bright"
-  tone,       // optional; if present overrides derived tone
+  voice,      
+  speed,     
+  length,   
+  background, 
+  pitch,     
+  tone,
 }) {
   const [bg, setBg] = useState(background || "none");
   const [bgVol, setBgVol] = useState(0.3);
-  const [busy, setBusy] = useState(false);      // generating audio from API
+  const [busy, setBusy] = useState(false);     
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  const speechRef = useRef(null); // HTMLAudioElement for narration
-  const bgRef = useRef(null);     // HTMLAudioElement for ambience
-  const urlRef = useRef(null);    // blob URL of generated narration
+  const speechRef = useRef(null);
+  const bgRef = useRef(null); 
+  const urlRef = useRef(null);
 
-  // Prefer explicit tone if provided; otherwise derive from pitch
   const effectiveTone =
     tone ??
     (pitch === "deep" ? "deep" : pitch === "bright" ? "bright" : "neutral");
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => stopAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep ambience volume synced
   useEffect(() => {
     if (bgRef.current) bgRef.current.volume = bgVol;
   }, [bgVol]);
@@ -105,7 +101,6 @@ export default function TTSPlayer({
     if (!a) return;
     if (a.paused && a.currentTime > 0) {
       try {
-        // resume ambience if selected
         if (bgRef.current) {
           bgRef.current.play().catch(() => {});
         } else if (bg !== "none") {
@@ -115,7 +110,6 @@ export default function TTSPlayer({
         setIsPlaying(true);
         setIsPaused(false);
       } catch {
-        // If autoplay fails, leave UI in paused state
       }
     }
   };
@@ -123,7 +117,6 @@ export default function TTSPlayer({
   const play = async () => {
     if (!text?.trim() || busy) return;
 
-    // Fresh start from the beginning (re-generate audio)
     stopAll();
     setBusy(true);
 
@@ -133,10 +126,10 @@ export default function TTSPlayer({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text,
-          voice,               // "male" | "female"
-          tone: effectiveTone, // "deep" | "neutral" | "bright"
-          pitch,               // send raw UI selection too
-          speed,               // "slow" | "normal" | "fast"
+          voice,               
+          tone: effectiveTone, 
+          pitch,               
+          speed,              
           length,
           background: bg,
         }),
@@ -163,11 +156,10 @@ export default function TTSPlayer({
       speechRef.current = audio;
 
       audio.onplay = () => {
-        // start ambience when narration actually starts
         playAmbience();
         setIsPlaying(true);
         setIsPaused(false);
-        setBusy(false); // generation phase is over
+        setBusy(false); 
       };
 
       audio.onpause = () => {
@@ -177,7 +169,6 @@ export default function TTSPlayer({
       };
 
       audio.onended = () => {
-        // finished; reset UI and resources
         stopAll();
       };
 
@@ -224,7 +215,6 @@ export default function TTSPlayer({
           </label>
         )}
 
-        {/* Controls */}
         <button onClick={play} disabled={busy || isPlaying || isPaused} aria-label="Play narration">
           {busy ? "Generating…" : "▶ Play"}
         </button>

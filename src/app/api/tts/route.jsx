@@ -1,4 +1,3 @@
-// src/app/api/tts/route.js
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -13,7 +12,7 @@ const VOICES = {
 };
 
 const RATE  = { slow: "-20%", normal: "0%", fast: "+20%" };
-const PITCH = { deep: "-10%", neutral: "0%", bright: "+20%" }; // percent-based, reliable
+const PITCH = { deep: "-10%", neutral: "0%", bright: "+20%" }; 
 
 const CHUNK_CHARS = 1700;
 const MAX_CHUNKS  = 25;
@@ -22,7 +21,6 @@ const OUTPUT_FMT  = "audio-24khz-48kbitrate-mono-mp3";
 const AZURE_TTS_URL    = `https://${REGION}.tts.speech.microsoft.com/cognitiveservices/v1`;
 const AZURE_VOICES_URL = `https://${REGION}.tts.speech.microsoft.com/cognitiveservices/voices/list`;
 
-/** STRICT gender check (no substring mistakes) */
 function isMale(v) {
   const s = String(v || "").trim().toLowerCase();
   return s === "male" || s === "m";
@@ -87,7 +85,6 @@ async function listVoices() {
   } catch { return []; }
 }
 
-/** Gender-aware fallback (never switch gender silently) */
 function chooseFallback(voices, wantMale = false) {
   if (!Array.isArray(voices) || !voices.length) return null;
 
@@ -207,7 +204,7 @@ export async function POST(req) {
     }
 
     const requestedMale = isMale(voice);
-    let chosenVoice = pickVoiceName(voice);          // STRICT
+    let chosenVoice = pickVoiceName(voice);     
     let chosenLang  = voiceLocale(chosenVoice);
     const rate      = pickRate(speed);
     const pitchVal  = pickPitch(tone, pitch);
@@ -237,7 +234,7 @@ export async function POST(req) {
         const errText = await r.text().catch(() => "");
         if (r.status === 400 && /voice/i.test(errText)) {
           const voices = await listVoices();
-          const fb = chooseFallback(voices, requestedMale); // SAME-GENDER fallback
+          const fb = chooseFallback(voices, requestedMale);
           if (!fb) {
             return NextResponse.json(
               { error: `No ${requestedMale ? "male" : "female"} English neural voice available in this region. Set AZURE_TTS_VOICE_${requestedMale ? "MALE" : "FEMALE"} in .env.local to a valid name.` },
@@ -284,7 +281,7 @@ export async function POST(req) {
       headers: {
         "Content-Type": "audio/mpeg",
         "Cache-Control": "no-store",
-        "X-Selected-Voice": chosenVoice, // useful to confirm on the client
+        "X-Selected-Voice": chosenVoice, 
       },
     });
   } catch (e) {

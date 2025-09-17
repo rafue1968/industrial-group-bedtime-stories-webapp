@@ -98,32 +98,6 @@ a {
   border-radius: 4px;
 }
 
-/* input { */
-  /* transition: background-color 0.3s ease, color 0.3s ease; */
-  /* color: black; */
-/* } */
-
-/* input::placeholder{ */
-  /* transition: color 0.3s ease; */
-  /* color: grey; */
-/* } */
-
-/* input:focus{ */
-  /* color: white; */
-  /* background-color: rgba(128, 0, 128, 0.3);  */
-/* } */
-
-/* input:hover::placeholder{ */
-  /* color: white; */
-/* } */
-
-/* input:focus::placeholder { */
-  /* color: rgba(255, 255, 255, 0.5); */
-/* } */
-
-/* input:hover { */
-  /* background-color: rgba(128, 0, 128, 0.307); */
-/* } */
 
 .generateBtn {
   background-color: #0070f3;
@@ -155,7 +129,6 @@ a {
 
 .container {
     min-height: 100vh;
-    /* background-color: #e0e0f8; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -566,13 +539,19 @@ html.dark-mode img {
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   background-color: #ECDCF2;
   color: #171717;
-  height: 400px
+  min-height: 400px
 }
+
+.profileCard{
+  background-color: rgba(128, 37, 128, 0.097);
+}
+
 
 .profileInput {
   display: block;
   width: 100%;
-  padding: 8px;
+  padding: 12px;
+  font-size: 1rem;
   margin-top: 5px;
   border-radius: 6px;
   border: 1px solid #8a2be2;
@@ -617,15 +596,62 @@ html.dark-mode img {
   opacity: 0.9;
   transform: translateY(-1px);
   transition: 0.2s;
-}
-
-.profile-p{
-  margin-bottom: 15px;
   font-size: 1rem;
+  padding: 12px 25px;
+  margin-top: 10px;
 }
 
-.profileSaveButton, .profileDeleteButton, .profileInput {
-  /* margin-top: 20px; */
+
+.profileCard h1 {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.profile-p {
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+  line-height: 1.6; 
+  color: #2d0c4b;   
+}
+
+.profile-p.showProfile{
+  margin-bottom: 30px;
+}
+
+.showLoginBox{
+  opacity: 0.3;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #f1ecef;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: inline-block;
+  transition: opacity ease-in-out 0.5s;
+}
+
+.logoutButton{
+  margin-left: 10;
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: none;
+  background: #e74c3c;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color ease-in-out 0.1s;
+}
+
+.logoutButton:hover{
+  background-color: #98180a;
+}
+
+.showLoginBox:hover{
+  opacity: 1;
 }
 
 

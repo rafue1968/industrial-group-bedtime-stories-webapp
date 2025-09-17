@@ -18,9 +18,8 @@ export default function Page() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-            const snap = await getDoc(doc(firestore, "users", user.uid));
+            await getDoc(doc(firestore, "users", user.uid));
             setUserId(user.uid);
-            // const role = snap.exists() ? snap.data().role : "user";
             } else {
             router.push("/");
             }

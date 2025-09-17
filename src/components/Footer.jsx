@@ -25,11 +25,10 @@ export default function Footer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmed }),
       });
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || "Request failed");
-      }
-      setMsg("✅ Thanks! You’re subscribed.");
+      
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || "Request failed");
+      setMsg(j.already ? "✅ You’re already subscribed." : "✅ Thanks! You’re subscribed.");
       setEmail("");
     } catch (err) {
       console.error("Newsletter subscribe failed:", err);

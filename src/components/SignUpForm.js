@@ -1,11 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import { useRouter } from 'next/navigation';
 import GoogleSignInUp from './GoogleSignInUp';
 import CreateUserIfNotExists from './CreateUserIfNotExist';
-import Link from 'next/link';
 
 export default function SignUpForm() {
   const router = useRouter();

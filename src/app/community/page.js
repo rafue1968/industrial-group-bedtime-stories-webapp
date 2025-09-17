@@ -29,9 +29,8 @@ export default function CommunityPage() {
   const [likes, setLikes] = useState({});
   const [saves, setSaves] = useState({});
   const [expandedStory, setExpandedStory] = useState(null);
-  const [authors, setAuthors] = useState({}); // {userId: displayName}
+  const [authors, setAuthors] = useState({}); 
 
-  // Keep track of inner Firestore listener cleanup functions
   const innerUnsubsRef = useRef([]);
 
   const genreIcons = {
@@ -45,13 +44,11 @@ export default function CommunityPage() {
     default: "/genres/other.png",
   };
 
-  // Auth listener
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
     return () => unsub();
   }, []);
 
-  // Public stories + likes/saves live subscriptions with proper cleanup
   useEffect(() => {
     const q = query(
       collection(firestore, "stories"),
@@ -64,7 +61,6 @@ export default function CommunityPage() {
       const storyList = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
       setStories(storyList);
 
-      // Prefetch author display names (once per unique userId)
       const uniqueUserIds = Array.from(
         new Set(storyList.map((s) => s.userId).filter(Boolean))
       );
@@ -84,11 +80,9 @@ export default function CommunityPage() {
       );
       setAuthors(nextAuthors);
 
-      // Clear previous inner listeners to avoid leaks
       innerUnsubsRef.current.forEach((u) => u && u());
       innerUnsubsRef.current = [];
 
-      // Subscribe to likes + user saves for each visible story
       storyList.forEach((story) => {
         const likeUnsub = onSnapshot(
           collection(firestore, "stories", story.id, "likes"),
@@ -123,13 +117,11 @@ export default function CommunityPage() {
       setLoading(false);
     });
 
-    // On unmount or user change
     return () => {
       unsub();
       innerUnsubsRef.current.forEach((u) => u && u());
       innerUnsubsRef.current = [];
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const toggleLike = async (e, storyId) => {
@@ -144,7 +136,6 @@ export default function CommunityPage() {
     }
   };
 
-  // Save full payload so Library can display & order by createdAt
   const toggleSave = async (e, storyId) => {
     e.stopPropagation();
     if (!user) return alert("Please log in to save.");
@@ -157,7 +148,6 @@ export default function CommunityPage() {
       return;
     }
 
-    // Get the full story payload from current list
     const s = stories.find((x) => x.id === storyId);
     if (!s) {
       alert("Story not found.");
@@ -172,18 +162,15 @@ export default function CommunityPage() {
       summary: s.summary || null,
       lengthMinutes: Number(s.lengthMinutes) || 5,
 
-      // timestamps for ordering / UI
       createdAt: serverTimestamp(),
       savedAt: serverTimestamp(),
 
-      // provenance
       source: "community",
       sourceStoryDoc: storyId,
       isPublic: !!s.isPublic,
     });
   };
 
-  // Ensure in-library then open reader page (/my-library/[id]) reusing Library's read flow
   const readStory = async (e, story) => {
     e?.stopPropagation?.();
     if (!user) {
@@ -192,7 +179,6 @@ export default function CommunityPage() {
       return;
     }
 
-    // make sure it's in the user's library; if not, save it first
     const saveRef = doc(firestore, "users", user.uid, "savedStories", story.id);
     const existing = await getDoc(saveRef);
     if (!existing.exists()) {
@@ -211,7 +197,6 @@ export default function CommunityPage() {
       });
     }
 
-    // Reuse the Library reader page
     router.push(`/my-library/${story.id}`);
   };
 
@@ -262,7 +247,6 @@ export default function CommunityPage() {
           Welcome to the Community Portal
         </h1>
 
-        {/* Popular Genres */}
         <section style={{ marginBottom: "4rem", textAlign: "center" }}>
           <h2 style={{ color: "#3E1D84", marginBottom: "1.5rem" }}>
             Popular Genres
@@ -326,7 +310,6 @@ export default function CommunityPage() {
           </div>
         </section>
 
-        {/* Stories Grid */}
         <section
           style={{
             maxWidth: "1100px",
@@ -360,9 +343,6 @@ export default function CommunityPage() {
             >
               {filteredStories.map((story) => {
                 const isExpanded = expandedStory === story.id;
-                // const icon =
-                //   (story.topic && `/genres/${String(story.topic).toLowerCase()}.png`) ||
-                //   "/genres/fantasy.png";
                 const topic = normalizeTopic(story.topic);
                 const icon = genreIcons[topic] || genreIcons.default;
 
@@ -426,7 +406,6 @@ export default function CommunityPage() {
                           color: "#4A3C72",
                         }}
                       >
-                        {/* NEW: shared by */}
                         <p style={{ margin: "0 0 6px" }}>
                           <strong>Shared by:</strong>{" "}
                           {story.userId ? authors[story.userId] || "Anonymous" : "Anonymous"}
@@ -442,7 +421,6 @@ export default function CommunityPage() {
                           ⏳ {story.lengthMinutes || 5} min read
                         </p>
 
-                        {/* NEW: Read Story using Library reader */}
                         <div style={{ marginTop: 10 }}>
                           <button
                             onClick={(e) => readStory(e, story)}

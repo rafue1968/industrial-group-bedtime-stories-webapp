@@ -1,6 +1,4 @@
 "use client";
-
-// import { useAuthRedirect } from "../../hooks/useAuthRedirect";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDoc, doc } from "firebase/firestore";
@@ -9,8 +7,6 @@ import { onAuthStateChanged,signOut } from "firebase/auth";
 import Loading from "../../components/Loading"
 import NavigationBar from "../../components/NavigationBar";
 import { getDisplayName } from "next/dist/shared/lib/utils";
-
-
 
 
 export default function ProfilePage() {
@@ -181,10 +177,10 @@ export default function ProfilePage() {
         </div>
       ) : (
         <div style={{ maxWidth: "500px", margin: "0 auto", textAlign: "left" }}>
-          <p className="profile-p" ><strong>Full Name:</strong> {userProfile.displayName}</p>
-          <p className="profile-p" ><strong>Email:</strong> {userProfile.email}</p>
-          <p className="profile-p" ><strong>Phone:</strong> {userProfile.phoneNumber}</p>
-          <p className="profile-p" ><strong>Password:</strong> *****</p>
+          <p className="profile-p showProfile" ><strong>Full Name:</strong> {userProfile.displayName}</p>
+          <p className="profile-p showProfile" ><strong>Email:</strong> {userProfile.email}</p>
+          <p className="profile-p showProfile" ><strong>Phone:</strong> {userProfile.phoneNumber}</p>
+          <p className="profile-p showProfile" ><strong>Password:</strong> *****</p>
           <button onClick={() => setIsEditing(true)} className="profileSaveButton">Update Profile</button>
           <button onClick={handleDeleteAccount} className="profileDeleteButton">
             Delete Account

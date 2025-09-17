@@ -26,7 +26,6 @@ export default function AIGenerator() {
   const [genStoryBusy, setGenStoryBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState(null);
-  // const [user, setUser] = useState("");
 
 
     const genreIcons = {
@@ -382,11 +381,6 @@ export default function AIGenerator() {
                   <button onClick={saveStory} style={{margin: "10px", backgroundColor: "#3E1D84", color: "white", padding: "15px 30px", borderRadius: "20px", border: 0, boxShadow: "0 3px 5px rgba(218, 165, 32, 0.7)", width: "150px", cursor: "pointer"}}><strong>Save Story</strong></button>
                 </div>
 
-                {/* {storyId && (
-                  <p style={{ marginTop: 8 }}>
-                    Share link: <a href={`/story/${storyId}`}>/story/{storyId}</a>
-                  </p>
-                )} */}
               </div>
             </div>
           )}

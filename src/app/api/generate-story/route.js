@@ -1,4 +1,3 @@
-// src/app/api/generate-story/route.js
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
@@ -42,24 +41,22 @@ ${summaryText}
 
     const batch = db.batch();
 
-    // ✅ Add richer metadata for Community Page
     batch.set(storyRef, {
       userId,
       summaryId,
       text: storyText,
-      summary: summaryText, // short version
-      title: title || summaryText.split(" ").slice(0, 5).join(" ") + "…", // crude title fallback
+      summary: summaryText,
+      title: title || summaryText.split(" ").slice(0, 5).join(" ") + "…",
       topic: topic || "General",
-      textPreview: storyText.slice(0, 120) + "…", // preview for cards
+      textPreview: storyText.slice(0, 120) + "…",
       lengthMinutes,
-      isPublic: true, // 👈 important so Community picks it up
+      isPublic: true,
       createdAt: new Date(),
       likesCount: 0,
       dislikesCount: 0,
       shareCode,
     });
 
-    // Link story to user summary
     const summaryRef = db
       .collection("users")
       .doc(userId)

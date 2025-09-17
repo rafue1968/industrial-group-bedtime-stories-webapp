@@ -1,15 +1,12 @@
 "use client";
 
 import AIGenerator from "../../components/AIGenerator";
-import NavigationBar from "../../components/NavigationBar";
-import styles from '../styles/NavigationBar.module.css';
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "../../components/Loading";
 import { auth, firestore } from "../../../lib/firebase";
-import ShowLogIn from "../../components/ShowLogIn";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
