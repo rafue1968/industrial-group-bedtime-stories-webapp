@@ -7,7 +7,6 @@ import { onAuthStateChanged,signOut } from "firebase/auth";
 import Loading from "../../components/Loading"
 
 
-
 export default function ProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
