@@ -10,32 +10,69 @@ const BG = {
   white: "/ambience/white.mp3",
 };
 
+const audioCache = new Map();
+
+function hashKey({ text, voice, tone, speed, length }) {
+  const s = JSON.stringify({ t: text, v: voice, o: tone, s: speed, l: length || 0 });
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  return h.toString(16);
+}
+
+async function fetchWithRetry(url, init, { tries = 3, baseMs = 600 } = {}) {
+  let lastErr;
+  for (let i = 0; i < tries; i++) {
+    const res = await fetch(url, init);
+    if (res.ok) return res;
+
+    if (res.status === 429 || res.status === 503 || res.status === 502 || res.status === 504) {
+      const txt = await res.text().catch(() => "");
+      lastErr = new Error(`TTS throttled (${res.status})${txt ? `: ${txt.slice(0, 200)}` : ""}`);
+      const retryAfter = parseInt(res.headers.get("Retry-After") || "", 10);
+      const delay = Number.isFinite(retryAfter)
+        ? Math.min(retryAfter * 1000, 5000)
+        : Math.min(baseMs * Math.pow(2, i) + Math.random() * 250, 4000);
+      await new Promise(r => setTimeout(r, delay));
+      continue;
+    }
+
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error(j.error || `Azure TTS failed (${res.status})`);
+    } else {
+      const t = await res.text().catch(() => "");
+      throw new Error(`Azure TTS failed (${res.status})${t ? `: ${t.slice(0, 300)}` : ""}`);
+    }
+  }
+  throw lastErr || new Error("Azure TTS throttled. Please try again in a moment.");
+}
+
+
 export default function TTSPlayer({
   text,
-  voice,      
-  speed,     
-  length,   
+  voice,
+  speed,
+  length, 
   background, 
-  pitch,     
+  pitch, 
   tone,
 }) {
   const [bg, setBg] = useState(background || "none");
   const [bgVol, setBgVol] = useState(0.3);
-  const [busy, setBusy] = useState(false);     
+  const [busy, setBusy] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
   const speechRef = useRef(null);
-  const bgRef = useRef(null); 
+  const bgRef = useRef(null);
   const urlRef = useRef(null);
 
   const effectiveTone =
     tone ??
     (pitch === "deep" ? "deep" : pitch === "bright" ? "bright" : "neutral");
 
-  useEffect(() => {
-    return () => stopAll();
-  }, []);
+  useEffect(() => () => stopAll(), []);
 
   useEffect(() => {
     if (bgRef.current) bgRef.current.volume = bgVol;
@@ -43,9 +80,7 @@ export default function TTSPlayer({
 
   const revokeUrl = () => {
     if (urlRef.current) {
-      try {
-        URL.revokeObjectURL(urlRef.current);
-      } catch {}
+      try { URL.revokeObjectURL(urlRef.current); } catch {}
       urlRef.current = null;
     }
   };
@@ -109,8 +144,7 @@ export default function TTSPlayer({
         await a.play();
         setIsPlaying(true);
         setIsPaused(false);
-      } catch {
-      }
+      } catch {}
     }
   };
 
@@ -120,38 +154,36 @@ export default function TTSPlayer({
     stopAll();
     setBusy(true);
 
-    try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text,
-          voice,               
-          tone: effectiveTone, 
-          pitch,               
-          speed,              
-          length,
-          background: bg,
-        }),
-      });
+    const key = hashKey({ text, voice, tone: effectiveTone, speed, length });
 
-      if (!res.ok) {
-        const ct = res.headers.get("content-type") || "";
-        let reason = `Azure TTS failed (${res.status})`;
-        if (ct.includes("application/json")) {
-          const j = await res.json().catch(() => ({}));
-          if (j?.error) reason = j.error + (j.detail ? ` — ${j.detail}` : "");
-        } else {
-          const t = await res.text().catch(() => "");
-          if (t) reason = `${reason}: ${t.slice(0, 300)}`;
-        }
-        throw new Error(reason);
+    try {
+      let url = audioCache.get(key);
+
+      if (!url) {
+        const res = await fetchWithRetry(
+          "/api/tts",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              text,
+              voice,
+              tone: effectiveTone,
+              pitch,
+              speed,
+              length,
+              background: bg,
+            }),
+          },
+          { tries: 3, baseMs: 700 }
+        );
+
+        const blob = await res.blob();
+        url = URL.createObjectURL(blob);
+        audioCache.set(key, url);
       }
 
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
       urlRef.current = url;
-
       const audio = new Audio(url);
       speechRef.current = audio;
 
@@ -159,7 +191,7 @@ export default function TTSPlayer({
         playAmbience();
         setIsPlaying(true);
         setIsPaused(false);
-        setBusy(false); 
+        setBusy(false);
       };
 
       audio.onpause = () => {
@@ -182,7 +214,12 @@ export default function TTSPlayer({
     } catch (e) {
       console.error(e);
       setBusy(false);
-      alert(`Sorry, narration could not be generated.\n${e?.message || ""}`);
+      const msg = String(e?.message || e);
+      if (msg.includes("(429)") || /throttled/i.test(msg)) {
+        alert("We’re synthesizing a lot right now. Please try again in a few seconds.");
+      } else {
+        alert(`Sorry, narration could not be generated.\n${msg}`);
+      }
     }
   };
 
